@@ -49,7 +49,7 @@ def make_request(method: str, endpoint: str, data: dict = None) -> dict:
     if response.status_code != 200:
         raise requests.exceptions.HTTPError(f"Received status code {response.status_code}")
     print("make_request response:")
-    #pprint.pprint(response.json())
+    pprint.pprint(response.json())
     print("response end\n")
     return response.json()
     
