@@ -5,12 +5,33 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
+                "notepad": {
+                    "type": "object",
+                    "properties": {
+                        "Complete_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
+                        },
+                        "Current_step":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the current step you are performing to complete the user task. use 'no-steps' if there are none"
+                        },
+                        "Next_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the planned next steps to complete the user task. use 'no-steps' if there are none"
+                        },
+                    },
+                    "required": ["Complete_steps","Current_step", "Next_steps"],
+                },
                 "completed": {
                     "type": "boolean",
                     "description": "Whether to only return completed todos",
                 },
             },
-            "required": [],
+            "required": ["notepad"],
         },
     },
     {
@@ -19,6 +40,27 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
+                "notepad": {
+                    "type": "object",
+                    "properties": {
+                        "Complete_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
+                        },
+                        "Current_step":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the current step you are performing to complete the user task. use 'no-steps' if there are none"
+                        },
+                        "Next_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the planned next steps to complete the user task. use 'no-steps' if there are none"
+                        },
+                    },
+                    "required": ["Complete_steps","Current_step", "Next_steps"],
+                },
                 "todo": {
                     "type": "object",
                     "description": "The new todo to be created",
@@ -40,7 +82,7 @@ function_definitions = [
                     "required": ["task"],
                 },
             },
-            "required": ["todo"],
+            "required": ["todo","notepad"],
         },
     },
     {
@@ -49,6 +91,27 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
+                "notepad": {
+                    "type": "object",
+                    "properties": {
+                        "Complete_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
+                        },
+                        "Current_step":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the current step you are performing to complete the user task. use 'no-steps' if there are none"
+                        },
+                        "Next_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the planned next steps to complete the user task. use 'no-steps' if there are none"
+                        },
+                    },
+                    "required": ["Complete_steps","Current_step", "Next_steps"],
+                },
                 "id": {
                     "type": "integer",
                     "description": "The id of the todo to update",
@@ -69,7 +132,7 @@ function_definitions = [
                     "required": ["task"],
                 },
             },
-            "required": ["id", "todo"],
+            "required": ["id", "todo", "notepad"],
         },
     },
     {
@@ -78,12 +141,33 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
+                "notepad": {
+                    "type": "object",
+                    "properties": {
+                        "Complete_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
+                        },
+                        "Current_step":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the current step you are performing to complete the user task. use 'no-steps' if there are none"
+                        },
+                        "Next_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the planned next steps to complete the user task. use 'no-steps' if there are none"
+                        },
+                    },
+                    "required": ["Complete_steps","Current_step", "Next_steps"],
+                },
                 "id": {
                     "type": "integer",
                     "description": "The id of the todo to delete",
                 },
             },
-            "required": ["id"],
+            "required": ["id", "notepad"],
         },
     },
     {
@@ -92,14 +176,83 @@ function_definitions = [
         "parameters": {"type": "object", "properties": {}, "required": []},
     },
     {
+        "name": "ha_get_entity_history",
+        "description": "Get the history of one or more entities on home assistant. Use this if you need to find information about the history or state changes for an item in the house",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "notepad": {
+                    "type": "object",
+                    "properties": {
+                        "Complete_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
+                        },
+                        "Current_step":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the current step you are performing to complete the user task. use 'no-steps' if there are none"
+                        },
+                        "Next_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the planned next steps to complete the user task. use 'no-steps' if there are none"
+                        },
+                    },
+                    "required": ["Complete_steps","Current_step", "Next_steps"],
+                },
+                "entity_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "List of entity IDs. If you dont know an entity ID use ha_get_filtered_entity_states_service function to find it"
+                },
+                "start_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Start of the period (YYYY-MM-DDThh:mm:ssTZD)"
+                },
+                "end_time": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "End of the period (YYYY-MM-DDThh:mm:ssTZD)"
+                },
+            },
+            "required": ["entity_ids", "start_time", "end_time", "notepad"]
+        }
+    },
+    {
         "name": "ha_make_request",
         "description": "Makes a request to the home assistant endpoint with the provided method and data",
         "parameters": {
             "type": "object",
             "properties": {
+                "notepad": {
+                    "type": "object",
+                    "properties": {
+                        "Complete_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
+                        },
+                        "Current_step":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the current step you are performing to complete the user task. use 'no-steps' if there are none"
+                        },
+                        "Next_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the planned next steps to complete the user tas. use 'no-steps' if there are nonek"
+                        },
+                    },
+                    "required": ["Complete_steps","Current_step", "Next_steps"],
+                },
                 "method": {
                     "type": "string",
-                    "description": "The HTTP method. Allowed methods are 'GET' and 'POST'.",
+                    "description": "The HTTP method. Accepts 'GET' and 'POST'.",
                 },
                 "endpoint": {
                     "type": "string",
@@ -110,26 +263,51 @@ GET,'/api/', Returns a message if the API is up and running.
 GET,'/api/config', Returns the current configuration as JSON.
 GET,'/api/events', Returns an array of event objects. Each event object contains event name and listener count.
 GET,'/api/services', Returns an array of service objects. Each object contains the domain and which services it contains.
-GET,'/api/history/period/<timestamp>', Returns an array of state changes in the past. Each object contains further details for the entities. filter_entity_id=<entity_ids> is required and filters one or more entities', comma separated. The <timestamp> (YYYY-MM-DDThh:mm:ssTZD) is optional and defaults to 1 day before the time of the request
-GET,'/api/logbook/<timestamp>', Returns an array of logbook entries. The <timestamp> (YYYY-MM-DDThh:mm:ssTZD) is optional. entity=<entity_id> to filter on one entity.'/api/states', Returns an array of state objects. Each state has the following attributes: entity_id, state, last_changed and attributes.
+GET,'/api/logbook/<timestamp>', Returns an array of logbook entries.
+	<timestamp> (YYYY-MM-DDThh:mm:ssTZD) defines start of the period
 GET,'/api/states/<entity_id>', Returns a state object for specified entity_id. Returns 404 if not found.
 GET,'/api/error_log', Retrieve all errors logged during the current session of Home Assistant as a plaintext response.
-GET,'/api/camera_proxy/<camera entity_id>', Returns the data (image) from the specified camera entity_id.'/api/calendars', Returns the list of calendar entities.
-GET,'/api/calendars/<calendar entity_id>', Returns the list of calendar events for the specified calendar entity_id between the start and end times (exclusive).
-POST,'/api/states/<entity_id>', Updates or creates a state. You can create any state that you want, it does not have to be backed by an entity in Home Assistant.Expects a JSON object that has at least a state attribute:
-POST,'/api/events/<event_type>', Fires an event with event_type.You can pass an optional JSON object to be used as event_data.
-POST,'/api/services/<domain>/<service>', Calls a service within a specific domain. Will return when the service has been executed or after 10 seconds, whichever comes first.You can pass an optional JSON object to be used as service_data.<domain> is equal to the first part of the 'entity_id'
+POST,'/api/states/<entity_id>', Updates or creates a state. You can create any state that you want, it does not have to be backed by an entity in Home Assistant.
+POST,'/api/services/<domain>/<service>', Calls a service within a specific domain. Will return when the service has been executed or after 10 seconds, whichever comes first.<domain> is equal to the first part of the 'entity_id' before the period
 POST,'/api/template', Render a Home Assistant template
 POST,'/api/config/core/check_config', Trigger a check of configuration.yaml. No additional data needs to be passed in with this request. Needs config integration enabled.
 POST,'/api/intent/handle', Handle an intent.
+If you dont know an <entity ID> or <domain> use ha_get_filtered_entity_states_service function to find it
                     """
                 },
                 "data": {
                     "type": ["object", "null"],
-                    "description": "The data to be sent with the request. Default is None.",
+                    "description":"""
+for:'/api/','/api/config','/api/events','/api/services','/api/states/<entity_id>','/api/error_log','/api/template','/api/config/core/check_config',
+	'data' = ""
+for:'/api/logbook/<timestamp>'
+	'data' =
+		Required:
+			none
+		Optional: 
+			end_time=<timestamp> (YYYY-MM-DDThh:mm:ssTZD)(URL encoded, defaults to a day if omitted), 
+			filter_entity_id=<entity_ids>, a comma-separated list,
+for:'/api/states/<entity_id>'
+	'data' = 
+		Requiresd:
+			a JSON object that has at least a state attribute e.g. data = {"state": "25", "attributes": {"unit_of_measurement": "°C"}}
+POST,'/api/events/<event_type>', 
+	'data' = 
+		Optional:
+			JSON object to be used as event_data. e.g. {"message": "Event download_file fired."}
+POST,'/api/services/<domain>/<service>'
+	'data' =
+		Optional:
+			JSON object to be used as service_data. Returns a list of states that have changed while the service was being executed. e.g. {"entity_id": "light.Ceiling"}
+'/api/intent/handle',
+	'data' =
+		Required:
+			a JSON object e.g.{ "name": "SetTimer", "data": { "seconds": "30" } }
+If you dont know an <entity ID> or <domain> use ha_get_filtered_entity_states_service function to find it"""
+                ,
                 },
             },
-            "required": ["method", "endpoint"],
+            "required": ["method", "endpoint", "notepad"],
         },
     },
     {
@@ -143,6 +321,27 @@ e.g. In this house lights, switch, led and lamps are used interchangably, so a f
         "parameters": {
             "type": "object",
             "properties": {
+                "notepad": {
+                    "type": "object",
+                    "properties": {
+                        "Complete_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
+                        },
+                        "Current_step":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the current step you are performing to complete the user task. use 'no-steps' if there are none"
+                        },
+                        "Next_steps":{
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "this is essential for this function to work. list the planned next steps to complete the user task. use 'no-steps' if there are none"
+                        },
+                    },
+                    "required": ["Complete_steps","Current_step", "Next_steps"],
+                },
                 "patterns": {
                     "type": ["array", "null"],
                     "items": {
@@ -151,7 +350,7 @@ e.g. In this house lights, switch, led and lamps are used interchangably, so a f
                     "description": "A list of regex patterns to filter the entities. Default is None, which returns all entities."
                 },
             },
-            "required": [],
+            "required": ["notepad"],
         },
     }
 ]
