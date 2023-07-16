@@ -387,7 +387,7 @@ e.g. In this house lights, switch, led and lamps are used interchangably, so a f
                 "forecast_type": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "description": "Optionall list of forecast blocks for which the weather forecast is requested. Can be 'currently', 'minutely', 'hourly', 'daily', or 'alerts'. If not provided, data for all forecast blocks will be returned",
+                    "description": "Optionall list of forecast blocks for which the weather forecast is requested. Can be 'currently', 'minutely' (returns next hour), 'hourly' (returns next 24 hours), 'daily' (returns next week), or 'alerts'. If not provided, data for all forecast blocks will be returned",
                 }
             },
             "required": ["planning", "location", "forecast_type"],

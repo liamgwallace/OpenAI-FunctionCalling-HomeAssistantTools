@@ -56,7 +56,6 @@ def get_weather_forecast(location: str, forecast_type: Optional[List[str]] = Non
 
         # Send a GET request to the Pirate Weather API
         response = requests.get(url)
-        
         # Initialize result
         result = ''
 
@@ -87,7 +86,9 @@ def get_weather_forecast(location: str, forecast_type: Optional[List[str]] = Non
                             header = list(daily_data[0].keys())
                             result += ",".join(header) + "\n"
                             for d in daily_data:
-                                d['time'] = dt.fromtimestamp(d['time']).strftime('%Y-%m-%d %H:%M:%S')
+                                for key, value in d.items():
+                                    if 'time' in key.lower():  # Check if the key contains 'time' or 'Time'
+                                        d[key] = dt.fromtimestamp(value).strftime('%Y-%m-%d %H:%M:%S')  # Convert value to readable format
                                 result += ",".join(map(str, d.values())) + "\n"
                     elif block == "alerts":
                         alerts_data = data[block]['data']
@@ -120,9 +121,9 @@ if __name__ == "__main__":
     # print(get_weather_forecast(location, ['hourly']))
     # print(get_weather_forecast(location, ['daily']))
     # print(get_weather_forecast(location, ['alerts']))
-    # print(get_weather_forecast(location, ['currently', 'daily']))
+    print(get_weather_forecast(location, ['currently', 'minutely','hourly','daily','alerts']))
     # print(get_weather_forecast(location))
-    coordinates = name_to_lat_long(location)
+    # coordinates = name_to_lat_long(location)
     print(coordinates)
 
 
