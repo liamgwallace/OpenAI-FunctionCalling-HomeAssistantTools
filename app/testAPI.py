@@ -23,7 +23,7 @@ if __name__ == "__main__":
     # Enter a loop for multiple queries
     while True:
         # Prompt for a query from the user
-        print(f"\n!#############################################")
+        print(f"#############################################")
         query = input(f"\nPlease enter your query (or 'q' to exit):\n")
         print(f"\n####\n")
 
@@ -33,4 +33,4 @@ if __name__ == "__main__":
 
         # Otherwise, send the query to the FastAPI application and print the response
         response = query_fast_api(query)
-        print(f"*#############################################\n{response}")
+        print(f"{response}\n")

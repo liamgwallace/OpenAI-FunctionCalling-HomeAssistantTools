@@ -1,6 +1,7 @@
 import requests
 import json
 from .ha_api_funcs import get_filtered_entity_states_service, make_request, get_entity_history # Import the functions from the 'ha_api_funcs.py' file
+from .pirate_weather_api import get_weather_forecast# Import the functions from the 'pirate_weather_api.py' file
 
 def get_todos(completed=None):
     params = {"completed": completed} if completed is not None else None
@@ -45,6 +46,10 @@ def ha_make_request(method, endpoint, data=None):
 def ha_get_entity_history(entity_ids: list[str], start_time, end_time) -> dict:
     return get_entity_history(entity_ids, start_time, end_time)
 
+# Function to call get_entity_history
+def pw_get_weather_forecast(location: str, forecast_type: list[str]) -> dict:
+    return get_weather_forecast(location, forecast_type)
+
 
 
 api_functions = {
@@ -54,5 +59,6 @@ api_functions = {
     "delete_todo": delete_todo,
     "ha_get_filtered_entity_states_service": ha_get_filtered_entity_states_service,
     "ha_make_request": ha_make_request,
-    "ha_get_entity_history": ha_get_entity_history  # Added the newly defined function
+    "ha_get_entity_history": ha_get_entity_history,
+    "pw_get_weather_forecast": pw_get_weather_forecast,
 }
