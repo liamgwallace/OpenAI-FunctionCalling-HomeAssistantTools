@@ -177,7 +177,7 @@ function_definitions = [
     },
     {
         "name": "ha_get_entity_history",
-        "description": "Get the history of one or more entities on home assistant. Use this if you need to find information about the history or state changes for an item in the house",
+        "description": "Get the history of one or more entities on home assistant. Use this if you need to find information about the history or state changes for an item in the house. Ensure you have used 'ha_get_filtered_entity_states_service' unless you have been told an entity ID specificaly",
         "parameters": {
             "type": "object",
             "properties": {
@@ -207,7 +207,7 @@ function_definitions = [
                     "items": {
                         "type": "string"
                     },
-                    "description": "List of entity IDs. If you dont know an entity ID use ha_get_filtered_entity_states_service function to find it"
+                    "description": "List of entity IDs. Dont assume you know the entity ID ALWAYS use 'ha_get_filtered_entity_states_service' function first to find it"
                 },
                 "start_time": {
                     "type": "string",
@@ -225,7 +225,7 @@ function_definitions = [
     },
     {
         "name": "ha_make_request",
-        "description": "Makes a request to the home assistant endpoint with the provided method and data",
+        "description": "Makes a request to the home assistant endpoint with the provided method and data. Ensure you have used 'ha_get_filtered_entity_states_service' unless you have been told an entity ID specifical",
         "parameters": {
             "type": "object",
             "properties": {
@@ -258,38 +258,25 @@ function_definitions = [
                     "type": "string",
                     "description": """
 The API endpoint examples are.
-method to use,endpoint details, description
+method to use,endpoint details, descriiption
 GET,'/api/', Returns a message if the API is up and running.
 GET,'/api/config', Returns the current configuration as JSON.
 GET,'/api/events', Returns an array of event objects. Each event object contains event name and listener count.
-GET,'/api/services', Returns an array of service objects. Each object contains the domain and which services it contains.
+GET,'/api/services', Returns an array of service objects. Each object contains the domain and which services it contains. Use this to find when an entity last ran.
 GET,'/api/logbook/<timestamp>', Returns an array of logbook entries.
 	<timestamp> (YYYY-MM-DDThh:mm:ssTZD) defines start of the period
 GET,'/api/states/<entity_id>', Returns a state object for specified entity_id. Returns 404 if not found.
-GET,'/api/error_log', Retrieve all errors logged during the current session of Home Assistant as a plaintext response.
-POST,'/api/states/<entity_id>', Updates or creates a state. You can create any state that you want, it does not have to be backed by an entity in Home Assistant.
 POST,'/api/services/<domain>/<service>', Calls a service within a specific domain. Will return when the service has been executed or after 10 seconds, whichever comes first.<domain> is equal to the first part of the 'entity_id' before the period
-POST,'/api/template', Render a Home Assistant template
-POST,'/api/config/core/check_config', Trigger a check of configuration.yaml. No additional data needs to be passed in with this request. Needs config integration enabled.
-POST,'/api/intent/handle', Handle an intent.
-If you dont know an <entity ID> or <domain> use ha_get_filtered_entity_states_service function to find it
                     """
                 },
                 "data": {
                     "type": ["object", "null"],
                     "description":"""
-for:'/api/','/api/config','/api/events','/api/services','/api/states/<entity_id>','/api/error_log','/api/template','/api/config/core/check_config',
+for:'/api/','/api/config','/api/events','/api/services',
 	'data' = ""
-for:'/api/logbook/<timestamp>'
-	'data' =
-		Required:
-			none
-		Optional: 
-			end_time=<timestamp> (YYYY-MM-DDThh:mm:ssTZD)(URL encoded, defaults to a day if omitted), 
-			filter_entity_id=<entity_ids>, a comma-separated list,
 for:'/api/states/<entity_id>'
 	'data' = 
-		Requiresd:
+		Optional:
 			a JSON object that has at least a state attribute e.g. data = {"state": "25", "attributes": {"unit_of_measurement": "°C"}}
 POST,'/api/events/<event_type>', 
 	'data' = 
@@ -299,22 +286,18 @@ POST,'/api/services/<domain>/<service>'
 	'data' =
 		Optional:
 			JSON object to be used as service_data. Returns a list of states that have changed while the service was being executed. e.g. {"entity_id": "light.Ceiling"}
-'/api/intent/handle',
-	'data' =
-		Required:
-			a JSON object e.g.{ "name": "SetTimer", "data": { "seconds": "30" } }
 If you dont know an <entity ID> or <domain> use ha_get_filtered_entity_states_service function to find it"""
                 ,
                 },
             },
-            "required": ["method", "endpoint", "planning"],
+            "required": [ "planning", "method", "endpoint", "data"],
         },
     },
     {
         "name": "ha_get_filtered_entity_states_service",
         "description": """
 Gets a list of entity_id, entity_name, entity_state from the Home Assistant endpoint included also is the <domain> and <service> for the returned entities, optionaly filters the list based on a list of regex patterns.
-This is handy to find a short list to extract the name and state of an entity to allow you to use it in a POST request later.
+Use this to find a short list to extract the name and state of an entity to allow you to use it in a POST request later.
 cover your bases with the REGEX to include as many permutations as possible.
 e.g. In this house lights, switch, led and lamps are used interchangably, so a filter for living room lights could be [r'\bliving\b', r'\broom\b', r'\blight\b', r'\bled\b', r'\blamp\b']"""
         ,
@@ -347,10 +330,10 @@ e.g. In this house lights, switch, led and lamps are used interchangably, so a f
                     "items": {
                         "type": "string"
                     },
-                    "description": "A list of regex patterns to filter the entities. Default is None, which returns all entities."
+                    "description": "A list of regex patterns to filter the entities. Default is None, which returns all entities.cover your bases with the REGEX to include as many permutations as possible. e.g. In this house lights, switch, led and lamps are used interchangably, so a filter for living room lights could be [r'\bliving\b', r'\broom\b', r'\blight\b', r'\bled\b', r'\blamp\b'] split it into single words"
                 },
             },
-            "required": ["planning"],
+            "required": ["planning", "patterns"],
         },
     },
     {

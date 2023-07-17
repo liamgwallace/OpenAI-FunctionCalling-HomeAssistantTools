@@ -48,9 +48,9 @@ def make_request(method: str, endpoint: str, data: dict = None) -> dict:
     # Check status code and handle exceptions
     if response.status_code != 200:
         raise requests.exceptions.HTTPError(f"Received status code {response.status_code}")
-    #print("make_request response:")
-    #pprint.pprint(response.json())
-    #print("response end\n")
+    # print("make_request response:")
+    # pprint.pprint(response.json())
+    # print("response end\n")
     return response.json()
     
 def get_filtered_services(domains: Optional[List[str]] = None) -> str:
@@ -89,6 +89,15 @@ def get_filtered_entity_states_service(patterns: Optional[List[str]] = None) -> 
 
     ls = ["entity_id, name, state"]
     domains = set()
+    if patterns is not None:
+        print(f"patterns: {patterns}")
+        # Split multi-word patterns into individual words
+        individual_patterns = []
+        for pattern in patterns:
+            individual_patterns.extend(pattern.split())
+        patterns = individual_patterns
+    
+    print(f"patterns: {patterns}")
 
     for e in states:
         entity_id = e['entity_id'].lower()
@@ -97,6 +106,7 @@ def get_filtered_entity_states_service(patterns: Optional[List[str]] = None) -> 
         state = e['state']
 
         if patterns is not None:
+
             # Check if any of the patterns matches the entity_id or friendly_name
             if any(re.search(pattern, entity_id) or re.search(pattern, friendly_name) for pattern in patterns):
                 ls.append(f"{entity_id},{friendly_name},{state}")
@@ -195,6 +205,9 @@ if __name__ == "__main__":
     
     # Fetch states from the server
     # response = make_request("GET", "/api/states")
+    response = make_request("GET", "/api/states/light.living_room_switch_2")
+    pprint.pprint(response)
+    
     # # Define the keywords
     # regex_filter = ['living[_]?room']
     # # Filter the response
@@ -225,7 +238,6 @@ if __name__ == "__main__":
     # print("S#################################")    
     # services = get_filtered_services()
     # print(services)
-    
-    response = get_entity_history(["sensor.temp_sensor_1_temperature_1","sensor.soil_moisture_sensor_01_temperature"],"2023-07-10T13:05:00+01:00", "2023-07-13T13:05:00+01:00")
+    response = get_entity_history(["sensor.temp_sensor_1_temperature_1"],"2023-07-16T00:00:00+0100", "2023-07-16T23:59:59+0100")
     pprint.pprint(response)
 

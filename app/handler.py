@@ -9,7 +9,7 @@ from dateutil.tz import tzlocal
 #gpt-4-0613
 
 class OpenAIHandler:
-    def __init__(self, api_functions, function_definitions, system_role="", model="gpt-3.5-turbo-0613", temperature=0.2):
+    def __init__(self, api_functions, function_definitions, system_role="", model="gpt-3.5-turbo-0613", temperature=0):
         load_dotenv(find_dotenv())
         openai.api_key = os.environ.get("OPENAI_API_KEY")
         if openai.api_key is None:
@@ -36,19 +36,19 @@ Do not return the plan to the user, just the result
 #"""
 
     def send_message(self, messages):
-        print(f"\n\n############   messages to llm   ##############")
-        pprint.pprint(messages)
+        # print(f"\n\n############   messages to llm   ##############")
+        # pprint.pprint(messages)
         # pprint.pprint(self.function_definitions)
-        print(f"############   end   ##############\n")
+        # print(f"############   end   ##############\n")
         response = openai.ChatCompletion.create(
             model=self.model,
             temperature=self.temperature,
             messages=messages,
             functions=self.function_definitions,
         )
-        print(f"\n\n############   response from llm   ##############")
-        pprint.pprint(response)
-        print(f"############   end   ##############\n")
+        # print(f"\n\n############   response from llm   ##############")
+        # pprint.pprint(response)
+        # print(f"############   end   ##############\n")
         response = response["choices"][0]["message"]
         return response
 
@@ -60,7 +60,7 @@ Do not return the plan to the user, just the result
      
         try:
             if 'function_call' in response:
-                print("DEBUG:function call found")
+                # print("DEBUG:function call found")
                 function_call = response['function_call']
                 function_name = function_call.get('name')                
                 # Ensure that arguments is a dictionary
@@ -102,14 +102,94 @@ Do not return the plan to the user, just the result
         return function_args, function_name, result, planning
 
     def send_response(self, query):
-        # Format the datetime object as a string
+        system_prompt = """
+Let's devise a step-by-step plan to address the user query '{find a good day to walk the dog this week and add the task and day to my todos}'.
+When outlining each step, provide a succinct description.
+If you can foresee the need for any functions or parameters, mention them explicitly.
+If unsure, use placeholders.
+The sole output should be the plan, nothing more.
+
+First, list all the tools you have at your disposal.
+Then list ones that might help answer this question.
+There may be many steps required, so start by searching for the information you need to make any function requests.
+Don't assume anything, you dont know anything other than the information you have been told.
+
+Each step should be in the following format:
+
+{
+  'Subtask': '<details of the problem and goal>',
+  'Reasoning': '<small step to solve the problem>',
+  'Function': '<list the function call that might help this step>',
+  'Parameters': '<additional parameters to pass to the function>'
+}
+
+Represent the plan in the following format:
+
+{
+  'Complete_steps': [],
+  'Current_step': [],
+  'Next_steps': [<list all the steps here>]
+}
+
+DO NOT CALL A FUNCTION. Just return a response to the user.
+"""
+        example_prompt = """
+%%%Example Question:
+{find a good day this week to walk the dog and add it to my todos.}
+
+%%%Example Answer
+{
+  Available functions:[list],
+  Functions I may need for this task:[list],
+  Plan:{
+  "Complete_steps": [],
+  "Current_step": [],
+  "Next_steps": [
+    {
+      "Subtask": "Check the weather forecast for the current week",
+      "Reasoning": "First I need to find a good day to walk the dog, we need to retrieve the weather forecast for the current week.",
+      "Function": "pw_get_weather_forecast",
+      "Parameters": {
+        "planning": {
+          "Complete_steps": [<updated plan here>],
+          "Current_step": [<updated plan here>],
+          "Next_steps": [<updated plan here>]
+        },
+        "location": "Cranleigh, Surrey",
+        "forecast_type": ["daily"]
+      }
+    },
+    {
+      "Subtask": "Store the selected day in the todos",
+      "Reasoning": "From the returned forecast I need to select the best day. e.g. avoid rain and wind. Si I can create a new todo item with the task 'Walk the dog' and the selected day as the due date.",
+      "Function": "create_todo",
+      "Parameters": {
+        "planning": {
+          "Complete_steps": [<updated plan here>],
+          "Current_step": [<updated plan here>],
+          "Next_steps": [<updated plan here>]
+        },
+        "todo": {
+          "task": "walk dog on <best day and date>"
+        }
+      }
+    },
+    {
+      "Subtask": "Return short output to user with my choice and basic reason. e.g. "I have checked this weeks forecast and <day&date> looks the nicest day for a walk. I have added it to your todo list.",
+      "Reasoning": "I now have all the information needed to respond to the user, no further function calls are needed.",
+      "Function": "none",
+    }
+  ]
+}
+"""
+        
         user = "This house belongs to Liam Wallace and Jenny Wallace"
         location = "Your location is Cranleigh, Surrey, UK"
         formatted_now = f" the current time is {datetime.now(tzlocal()).strftime('%Y-%m-%dT%H:%M:%S%z')}"
-        plan_prompt=f"Let's devise a step-by-step plan to address the user query '{query}'. When outlining each step, provide a succinct description. If you can foresee the need for any functions or parameters, mention them explicitly. If unsure, use placeholders. The sole output should be the plan, nothing more. Please note, do not make any function call during this step. Represent the plan in the following format: {{'Complete_steps': [<leave this field blank for now>, <list completed steps once complete>], 'Current_step': [<leave this field blank for now>], 'Next_steps': [<all steps should be listed here>, <etc.>]}} DO NOT CALL A FUNCTION. Just return a response to the user"
-        
         #create a detailed plan to solve the user request
-        messages_plan_create = [{"role": "user", "content": f"{plan_prompt}. {formatted_now}. {location}. {user}"}]
+        messages_system = [{"role": "system", "content": f"{system_prompt}. {formatted_now}. {location}. {user}\n{example_prompt}"}]        
+        messages_user = [{"role": "user", "content": query}]
+        messages_plan_create = messages_system + messages_user
         messages_first_plan = [self.send_message(messages_plan_create)]
         messages_first_plan[0]['content'] = f"To answer the users query, this is the original plan:\n{messages_first_plan[0]['content']}"
         print(f"\n\n############   Plan   ##############")
@@ -128,12 +208,10 @@ Do not return the plan to the user, just the result
             response = self.send_message(messages)
             function_args, function_name, result, planning = self.process_function_call(response)
             if result:
-                function_message = {
-                    "role": "function",
-                    "name": function_name if function_name else "unknown",
+                function_message = {                    "role": "function",                    "name": function_name if function_name else "unknown",
                     "content": f"function args: {json.dumps(function_args)}\nresponse:\n{result}",
                 }
                 messages_functions.append(function_message)
-                #messages_curr_plan = [{"role": "assistant", "content": f"To answer the users request I have made the following plan. It needs to be updated based on the results from the function and used if i make another function call in the 'planning' field\nPlan:'{planning}'"}]
+                messages_curr_plan = [{"role": "assistant", "content": f"To answer the users request I have made the following plan. It needs to be updated based on the results from the function and used if i make another function call in the 'planning' field\nPlan:'{planning}'"}]
             else:
                 return response["content"]

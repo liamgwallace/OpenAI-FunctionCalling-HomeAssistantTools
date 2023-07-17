@@ -45,7 +45,7 @@ def get_weather_forecast(location: str, forecast_type: Optional[List[str]] = Non
         url = f'https://api.pirateweather.net/forecast/{pirateweather_api_key}/{lat_long}?units=si'
 
         all_blocks = ['currently', 'minutely', 'hourly', 'daily', 'alerts']
-        
+
         # If forecast_type is None, include all blocks
         if forecast_type is None:
             forecast_type = all_blocks
@@ -72,38 +72,49 @@ def get_weather_forecast(location: str, forecast_type: Optional[List[str]] = Non
                         cur['time'] = dt.fromtimestamp(cur['time']).strftime('%Y-%m-%d %H:%M:%S')
                         result += ",".join(cur.keys()) + "\n"
                         result += ",".join(map(str, cur.values())) + "\n"
-                    elif block == "minutely" or block == "hourly":
+                    elif block == "minutely":
                         mins_data = data[block]['data']
                         if mins_data:
-                            header = list(mins_data[0].keys())
-                            result += ",".join(header) + "\n"
+                            minutely_filter = ["time", "precipIntensity", "precipProbability", "precipType"]
+                            filtered_header = [header for header in minutely_filter if header in mins_data[0]]
+                            result += ",".join(filtered_header) + "\n"
                             for d in mins_data:
-                                d['time'] = dt.fromtimestamp(d['time']).strftime('%Y-%m-%d %H:%M:%S')
-                                result += ",".join(map(str, d.values())) + "\n"
+                                filtered_data = [str(d.get(key, "")) for key in filtered_header]
+                                filtered_data[0] = dt.fromtimestamp(float(filtered_data[0])).strftime('%Y-%m-%d %H:%M:%S')
+                                result += ",".join(filtered_data) + "\n"
+
+                    elif block == "hourly":
+                        hourly_data = data[block]['data']
+                        if hourly_data:
+                            hourly_filter = ["time", "summary", "precipIntensity", "precipType", "temperature", "windSpeed", "windBearing", "cloudCover"]
+                            filtered_header = [header for header in hourly_filter if header in hourly_data[0]]
+                            result += ",".join(filtered_header) + "\n"
+                            for d in hourly_data:
+                                filtered_data = [str(d.get(key, "")) for key in filtered_header]
+                                filtered_data[0] = dt.fromtimestamp(float(filtered_data[0])).strftime('%Y-%m-%d %H:%M:%S')
+                                result += ",".join(filtered_data) + "\n"
+
                     elif block == "daily":
                         daily_data = data[block]['data']
                         if daily_data:
-                            header = list(daily_data[0].keys())
-                            result += ",".join(header) + "\n"
+                            daily_filter = ["time", "summary", "precipIntensity", "precipProbability","precipType","windSpeed","windBearing", "cloudCover", "temperatureMin", "temperatureMinTime", "temperatureMax", "temperatureMaxTime"]
+                            filtered_header = [header for header in daily_filter if header in daily_data[0]]
+                            result += ",".join(filtered_header) + "\n"
                             for d in daily_data:
-                                for key, value in d.items():
-                                    if 'time' in key.lower():  # Check if the key contains 'time' or 'Time'
-                                        d[key] = dt.fromtimestamp(value).strftime('%Y-%m-%d %H:%M:%S')  # Convert value to readable format
-                                result += ",".join(map(str, d.values())) + "\n"
-                    elif block == "alerts":
-                        alerts_data = data[block]['data']
-                        if alerts_data:
-                            header = list(alerts_data[0].keys())
-                            result += ",".join(header) + "\n"
-                            for d in alerts_data:
-                                d['time'] = dt.fromtimestamp(d['time']).strftime('%Y-%m-%d %H:%M:%S')
-                                result += ",".join(map(str, d.values())) + "\n"
+                                filtered_data = [str(d.get(key, "")) for key in filtered_header]
+                                for i, value in enumerate(filtered_data):
+                                    if 'time' in filtered_header[i].lower():
+                                        filtered_data[i] = dt.fromtimestamp(float(value)).strftime('%Y-%m-%d %H:%M:%S')
+                                result += ",".join(filtered_data) + "\n"
+
             result += f"\nUnits are SI.\nall precip: Millimetres per hour. precipAccumulation: Centimetres. temperatures and dewPoint: Degrees Celsius.all windSpeed: Meters per second. pressure: Hectopascals. visibility: Kilometres."
         else:
             return f"Error: Received status code {response.status_code} from Pirate Weather API"
         return result
     except Exception as e:
         return f"Error: {str(e)}"
+
+
 
 # This block is executed only when the module is run directly
 if __name__ == "__main__":
