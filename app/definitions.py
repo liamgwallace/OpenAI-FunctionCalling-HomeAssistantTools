@@ -5,33 +5,12 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
-                "planning": {
-                    "type": "object",
-                    "properties": {
-                        "Complete_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
-                        },
-                        "Current_step":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the current step you are performing to complete the user task. use 'no-steps' if there are none"
-                        },
-                        "Next_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the planned next steps to complete the user task. use 'no-steps' if there are none"
-                        },
-                    },
-                    "required": ["Complete_steps","Current_step", "Next_steps"],
-                },
                 "completed": {
                     "type": "boolean",
                     "description": "Whether to only return completed todos",
                 },
             },
-            "required": ["planning"],
+            "required": [],
         },
     },
     {
@@ -40,27 +19,6 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
-                "planning": {
-                    "type": "object",
-                    "properties": {
-                        "Complete_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
-                        },
-                        "Current_step":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the current step you are performing to complete the user task. use 'no-steps' if there are none"
-                        },
-                        "Next_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the planned next steps to complete the user task. use 'no-steps' if there are none"
-                        },
-                    },
-                    "required": ["Complete_steps","Current_step", "Next_steps"],
-                },
                 "todo": {
                     "type": "object",
                     "description": "The new todo to be created",
@@ -82,7 +40,7 @@ function_definitions = [
                     "required": ["task"],
                 },
             },
-            "required": ["todo","planning"],
+            "required": ["todo"],
         },
     },
     {
@@ -91,31 +49,6 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
-                "planning": {
-                    "type": "object",
-                    "properties": {
-                        "Complete_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
-                        },
-                        "Current_step":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the current step you are performing to complete the user task. use 'no-steps' if there are none"
-                        },
-                        "Next_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the planned next steps to complete the user task. use 'no-steps' if there are none"
-                        },
-                    },
-                    "required": ["Complete_steps","Current_step", "Next_steps"],
-                },
-                "id": {
-                    "type": "integer",
-                    "description": "The id of the todo to update",
-                },
                 "todo": {
                     "type": "object",
                     "description": "The updated todo",
@@ -132,7 +65,7 @@ function_definitions = [
                     "required": ["task"],
                 },
             },
-            "required": ["id", "todo", "planning"],
+            "required": ["id", "todo"],
         },
     },
     {
@@ -141,33 +74,12 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
-                "planning": {
-                    "type": "object",
-                    "properties": {
-                        "Complete_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
-                        },
-                        "Current_step":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the current step you are performing to complete the user task. use 'no-steps' if there are none"
-                        },
-                        "Next_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the planned next steps to complete the user task. use 'no-steps' if there are none"
-                        },
-                    },
-                    "required": ["Complete_steps","Current_step", "Next_steps"],
-                },
                 "id": {
                     "type": "integer",
                     "description": "The id of the todo to delete",
                 },
             },
-            "required": ["id", "planning"],
+            "required": ["id"],
         },
     },
     {
@@ -181,27 +93,6 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
-                "planning": {
-                    "type": "object",
-                    "properties": {
-                        "Complete_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
-                        },
-                        "Current_step":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the current step you are performing to complete the user task. use 'no-steps' if there are none"
-                        },
-                        "Next_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the planned next steps to complete the user task. use 'no-steps' if there are none"
-                        },
-                    },
-                    "required": ["Complete_steps","Current_step", "Next_steps"],
-                },
                 "entity_ids": {
                     "type": "array",
                     "items": {
@@ -220,7 +111,7 @@ function_definitions = [
                     "description": "End of the period (YYYY-MM-DDThh:mm:ssTZD)"
                 },
             },
-            "required": ["entity_ids", "start_time", "end_time", "planning"]
+            "required": ["entity_ids", "start_time", "end_time"]
         }
     },
     {
@@ -229,27 +120,6 @@ function_definitions = [
         "parameters": {
             "type": "object",
             "properties": {
-                "planning": {
-                    "type": "object",
-                    "properties": {
-                        "Complete_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
-                        },
-                        "Current_step":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the current step you are performing to complete the user task. use 'no-steps' if there are none"
-                        },
-                        "Next_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the planned next steps to complete the user task. use 'no-steps' if there are none"
-                        },
-                    },
-                    "required": ["Complete_steps","Current_step", "Next_steps"],
-                },
                 "method": {
                     "type": "string",
                     "description": "The HTTP method. Accepts 'GET' and 'POST'.",
@@ -290,7 +160,7 @@ If you dont know an <entity ID> or <domain> use ha_get_filtered_entity_states_se
                 ,
                 },
             },
-            "required": [ "planning", "method", "endpoint", "data"],
+            "required": ["method", "endpoint", "data"],
         },
     },
     {
@@ -304,27 +174,6 @@ e.g. In this house lights, switch, led and lamps are used interchangably, so a f
         "parameters": {
             "type": "object",
             "properties": {
-                "planning": {
-                    "type": "object",
-                    "properties": {
-                        "Complete_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of all the steps you have taken so-far to complete the users request. use 'no-steps' if there are none"
-                        },
-                        "Current_step":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the current step you are performing to complete the user task. use 'no-steps' if there are none"
-                        },
-                        "Next_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "this is essential for this function to work. Make a detailed list of the planned next steps to complete the user task. use 'no-steps' if there are none"
-                        },
-                    },
-                    "required": ["Complete_steps","Current_step", "Next_steps"],
-                },
                 "patterns": {
                     "type": ["array", "null"],
                     "items": {
@@ -333,7 +182,7 @@ e.g. In this house lights, switch, led and lamps are used interchangably, so a f
                     "description": "A list of regex patterns to filter the entities. Default is None, which returns all entities.cover your bases with the REGEX to include as many permutations as possible. e.g. In this house lights, switch, led and lamps are used interchangably, so a filter for living room lights could be [r'\bliving\b', r'\broom\b', r'\blight\b', r'\bled\b', r'\blamp\b'] split it into single words"
                 },
             },
-            "required": ["planning", "patterns"],
+            "required": ["patterns"],
         },
     },
     {
@@ -342,27 +191,6 @@ e.g. In this house lights, switch, led and lamps are used interchangably, so a f
         "parameters": {
             "type": "object",
             "properties": {
-                "planning": {
-                    "type": "object",
-                    "properties": {
-                        "Complete_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "List of all the steps taken so far to complete the request. Use 'no-steps' if there are none"
-                        },
-                        "Current_step":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "Current step being performed to complete the user task. Use 'no-steps' if there are none"
-                        },
-                        "Next_steps":{
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "List of the planned next steps to complete the user task. Use 'no-steps' if there are none"
-                        },
-                    },
-                    "required": ["Complete_steps","Current_step", "Next_steps"],
-                },
                 "location": {
                     "type": "string",
                     "description": "Location for which the weather forecast is requested, e.g 'Cranleigh, Surrey, England'",
@@ -373,7 +201,7 @@ e.g. In this house lights, switch, led and lamps are used interchangably, so a f
                     "description": "Optionall list of forecast blocks for which the weather forecast is requested. Can be 'currently', 'minutely' (returns next hour), 'hourly' (returns next 24 hours), 'daily' (returns next week), or 'alerts'. If not provided, data for all forecast blocks will be returned",
                 }
             },
-            "required": ["planning", "location", "forecast_type"],
+            "required": ["location", "forecast_type"],
         },
     }
 ]

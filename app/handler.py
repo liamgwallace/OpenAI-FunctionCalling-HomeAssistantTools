@@ -22,18 +22,53 @@ class OpenAIHandler:
         self.system_role = """
 You are professional level decision making assistant.
 You have access to a variety of functions that can help the user. 
+You will do 3 things.
+ 1. create a step by step plan and output this as a system message
+ 2. pick the next action on the plan and use the functions at your disposal to output the function and details as a system function
+ 3. If the plan is complete and you have enough to respond to the user then ignore 1 and 2 and output the reponse to the user in a system message
+ 
+ 
+1. Planning
+Let's devise a step-by-step plan to address the user query .
+When outlining each step, provide a succinct description.
+If you can foresee the need for any functions or parameters, mention them explicitly.
+If unsure, use placeholders.
+The sole output should be the plan, nothing more.
+
+First, list all the tools you have at your disposal.
+Then list ones that might help answer this question.
+There may be many steps required, so start by searching for the information you need to make any function requests.
+Don't assume anything, you dont know anything other than the information you have been told.
+
+Each step should be in the following format:
+
+{
+  'Subtask': '<details of the problem and goal>',
+  'Reasoning': '<small step to solve the problem>',
+  'Function': '<list the function call that might help this step>',
+  'Parameters': '<additional parameters to pass to the function>'
+}
+
+Represent the plan in the following format:
+
+{
+  'Complete_steps': [<list of steps>],
+  'Current_step': [<list of steps>],
+  'Next_steps': [<list of steps>]
+}
+
+2. Use a function
 You must choose the next function to call in order to help the user where possible. 
-Refer to the original plan, the updated plan and any results from function calls you have made to decide the next action.
+Refer to the plan and any results from previous function calls you have made to select the function and populate the correct fields
 Make your best attempt to call a function where possible. Only respond to the user if you cannot solve the task or have solved the task.
 Only use the functions you have been provided with. Do not guess at the data needed for a function, try and see if you can search for what is needed using a function at your disposal.
-When using the function make it is important to use the 
-Do not return the plan to the user, just the result
+
+3. Task complete :)
+DO NOT CALL A FUNCTION. Just return a response to the user.
 """
-#When you call a function you must first plan all the steps you will need to take to complete the user task in the planning. 
-#If you have been provided with an old planning you will update this based on the result from the last function message.
-#Keep a track of the successfull steps taken, the next one you are about to take and the planned tasks required to complete the user objective.
-#.
-#"""
+
+    def generate_AI_message(role, content):
+        return f'[{{"role": "{role}", "content": {content}}}]'
 
     def send_message(self, messages):
         # print(f"\n\n############   messages to llm   ##############")
@@ -46,9 +81,10 @@ Do not return the plan to the user, just the result
             messages=messages,
             functions=self.function_definitions,
         )
-        # print(f"\n\n############   response from llm   ##############")
-        # pprint.pprint(response)
-        # print(f"############   end   ##############\n")
+        print(f"\n\n############   message response from llm   ##############")
+        pprint.pprint(response)
+        # print(response["choices"][0]["message"]["content"])
+        print(f"############   end   ##############\n")
         response = response["choices"][0]["message"]
         return response
 
@@ -68,10 +104,10 @@ Do not return the plan to the user, just the result
                 if isinstance(function_args_dict, str):
                     function_args_dict = json.loads(function_args_dict)
                 #Strip the planning off of the function call resoponse
-                planning = function_args_dict.pop('planning', None)
-                print(f"\n\n############   planning   ##############")
-                pprint.pprint(planning)
-                print(f"############   end   ##############\n")
+                # planning = function_args_dict.pop('planning', None)
+                # print(f"\n\n############   planning   ##############")
+                # pprint.pprint(planning)
+                # print(f"############   end   ##############\n")
                 function_args_json = json.dumps(function_args_dict)
                 function_args = json.loads(function_args_json)
                 print(f"\n\n############   Found function   ##############")
@@ -99,11 +135,11 @@ Do not return the plan to the user, just the result
                 result = f"Function '{function_name}' not found"
                 print(result)
 
-        return function_args, function_name, result, planning
+        return function_args, function_name, result
 
     def send_response(self, query):
         system_prompt = """
-Let's devise a step-by-step plan to address the user query '{find a good day to walk the dog this week and add the task and day to my todos}'.
+Let's devise a step-by-step plan to address the user query .
 When outlining each step, provide a succinct description.
 If you can foresee the need for any functions or parameters, mention them explicitly.
 If unsure, use placeholders.
@@ -150,11 +186,6 @@ DO NOT CALL A FUNCTION. Just return a response to the user.
       "Reasoning": "First I need to find a good day to walk the dog, we need to retrieve the weather forecast for the current week.",
       "Function": "pw_get_weather_forecast",
       "Parameters": {
-        "planning": {
-          "Complete_steps": [<updated plan here>],
-          "Current_step": [<updated plan here>],
-          "Next_steps": [<updated plan here>]
-        },
         "location": "Cranleigh, Surrey",
         "forecast_type": ["daily"]
       }
@@ -164,11 +195,6 @@ DO NOT CALL A FUNCTION. Just return a response to the user.
       "Reasoning": "From the returned forecast I need to select the best day. e.g. avoid rain and wind. Si I can create a new todo item with the task 'Walk the dog' and the selected day as the due date.",
       "Function": "create_todo",
       "Parameters": {
-        "planning": {
-          "Complete_steps": [<updated plan here>],
-          "Current_step": [<updated plan here>],
-          "Next_steps": [<updated plan here>]
-        },
         "todo": {
           "task": "walk dog on <best day and date>"
         }
@@ -182,7 +208,8 @@ DO NOT CALL A FUNCTION. Just return a response to the user.
   ]
 }
 """
-        
+
+        print(f"query: {query}")
         user = "This house belongs to Liam Wallace and Jenny Wallace"
         location = "Your location is Cranleigh, Surrey, UK"
         formatted_now = f" the current time is {datetime.now(tzlocal()).strftime('%Y-%m-%dT%H:%M:%S%z')}"
@@ -192,26 +219,22 @@ DO NOT CALL A FUNCTION. Just return a response to the user.
         messages_plan_create = messages_system + messages_user
         messages_first_plan = [self.send_message(messages_plan_create)]
         messages_first_plan[0]['content'] = f"To answer the users query, this is the original plan:\n{messages_first_plan[0]['content']}"
-        print(f"\n\n############   Plan   ##############")
-        print(f"query: {query}")
-        #pprint.pprint(messages_first_plan[0].to_dict())
-        pprint.pprint(messages_first_plan)
-        print(f"############   end   ##############\n")
         
         #setup the messages for the loop
         messages_curr_plan = []
         messages_functions=[]
-        messages_system = [{"role": "system", "content": f"{self.system_role}. {formatted_now}. {location}. {user}"}]
+        messages_system = [{"role": "system", "content": f"{self.system_role}. {formatted_now}. {location}. {user}\n{example_prompt}"}]
         messages_user = [{"role": "user", "content": query}]
         while True:
             messages = messages_system + messages_user + messages_first_plan + messages_curr_plan + messages_functions
             response = self.send_message(messages)
-            function_args, function_name, result, planning = self.process_function_call(response)
+            function_args, function_name, result = self.process_function_call(response)
             if result:
-                function_message = {                    "role": "function",                    "name": function_name if function_name else "unknown",
+                function_message = {
+                    "role": "function","name": function_name if function_name else "unknown",
                     "content": f"function args: {json.dumps(function_args)}\nresponse:\n{result}",
                 }
                 messages_functions.append(function_message)
-                messages_curr_plan = [{"role": "assistant", "content": f"To answer the users request I have made the following plan. It needs to be updated based on the results from the function and used if i make another function call in the 'planning' field\nPlan:'{planning}'"}]
+                messages_curr_plan = [{"role": "assistant", "content": f"To answer the users request, I have made the following plan. It needs to be updated based on the results from the function and used if I make another function call in the 'planning' field.\nPlan: '{response['content']}'"}]
             else:
                 return response["content"]
