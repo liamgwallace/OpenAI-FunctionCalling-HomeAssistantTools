@@ -1,4 +1,4 @@
 # OpenAI-FunctionCalling-HomeAssistantTools
 OpenAI function calling using home assistant tools
 
-Use TestAPI.py to send messages to main.py
+Use /app/TestAPI.py to send messages to /main.py
